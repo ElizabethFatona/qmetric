@@ -1,5 +1,6 @@
 package kata.supermarket;
 
+import org.junit.Test;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -29,7 +30,8 @@ class BasketTest {
                 aSingleItemPricedPerUnit(),
                 multipleItemsPricedPerUnit(),
                 aSingleItemPricedByWeight(),
-                multipleItemsPricedByWeight()
+                multipleItemsPricedByWeight(),
+                twoMilkUnitsOnBuyOneGetOneFreeDiscount()
         );
     }
 
@@ -47,6 +49,7 @@ class BasketTest {
         return Arguments.of("multiple items priced per unit", "2.04",
                 Arrays.asList(aPackOfDigestives(), aPintOfMilk()));
     }
+
 
     private static Arguments aSingleItemPricedPerUnit() {
         return Arguments.of("a single item priced per unit", "0.49", Collections.singleton(aPintOfMilk()));
@@ -79,4 +82,13 @@ class BasketTest {
     private static Item twoHundredGramsOfPickAndMix() {
         return aKiloOfPickAndMix().weighing(new BigDecimal(".2"));
     }
+
+
+
+    private static Arguments twoMilkUnitsOnBuyOneGetOneFreeDiscount() {
+        return Arguments.of("two units of milk", "0.49",
+                Arrays.asList(aPintOfMilk(), aPintOfMilk()));
+    }
+
+
 }
