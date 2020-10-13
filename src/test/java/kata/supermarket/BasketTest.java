@@ -7,8 +7,10 @@ import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 import java.util.stream.Stream;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -19,10 +21,23 @@ class BasketTest {
     @MethodSource
     @ParameterizedTest(name = "{0}")
     void basketProvidesTotalValue(String description, String expectedTotal, Iterable<Item> items) {
+
+        // create a discount
+        List<Item> applicableDiscountItems = new ArrayList<>();
+        applicableDiscountItems.add(aPintOfMilk());
+        Discount discount = new Discount("BuyOneGetOneFree",applicableDiscountItems);
+
         final Basket basket = new Basket();
         items.forEach(basket::add);
+
+        //apply the discount
+        if(description.equalsIgnoreCase("2 milk items priced per unit with discount")) {
+            DiscountManager.applyBuyOneGetOneFreeDiscount(basket, discount, new BigDecimal(expectedTotal));
+        }
+
         assertEquals(new BigDecimal(expectedTotal), basket.total());
     }
+
 
     static Stream<Arguments> basketProvidesTotalValue() {
         return Stream.of(
@@ -31,7 +46,7 @@ class BasketTest {
                 multipleItemsPricedPerUnit(),
                 aSingleItemPricedByWeight(),
                 multipleItemsPricedByWeight(),
-                twoMilkUnitsOnBuyOneGetOneFreeDiscount()
+                applyBuyOneGetOneFreeDiscountTo2MilkUnits()
         );
     }
 
@@ -84,11 +99,10 @@ class BasketTest {
     }
 
 
+    private static Arguments applyBuyOneGetOneFreeDiscountTo2MilkUnits() {
 
-    private static Arguments twoMilkUnitsOnBuyOneGetOneFreeDiscount() {
-        return Arguments.of("two units of milk", "0.49",
+        return Arguments.of("2 milk items priced per unit with discount", "0.49",
                 Arrays.asList(aPintOfMilk(), aPintOfMilk()));
     }
-
 
 }

@@ -13,6 +13,9 @@ public class Discount {
         this.applicableItems = applicableItems;
     }
 
+    public String getDiscountName() {
+        return discountName;
+    }
 
     public List<Item> getApplicableItems() {
         return applicableItems;

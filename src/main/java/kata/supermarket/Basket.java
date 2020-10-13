@@ -9,8 +9,12 @@ import java.util.List;
 public class Basket {
     private final List<Item> items;
 
+    private TotalCalculator calculator;
+
     public Basket() {
+
         this.items = new ArrayList<>();
+        calculator = new TotalCalculator();
     }
 
     public void add(final Item item) {
@@ -22,14 +26,25 @@ public class Basket {
     }
 
     public BigDecimal total() {
-        return new TotalCalculator().calculate();
+        return calculator.calculate();
     }
 
-    private class TotalCalculator {
+
+    public TotalCalculator getCalculator() {
+        return calculator;
+    }
+
+
+    public class TotalCalculator {
         private final List<Item> items;
+
+
+
+        private BigDecimal discount;
 
         TotalCalculator() {
             this.items = items();
+            discount = BigDecimal.ZERO;
         }
 
         private BigDecimal subtotal() {
@@ -39,6 +54,10 @@ public class Basket {
                     .setScale(2, RoundingMode.HALF_UP);
         }
 
+
+        public void setDiscount(BigDecimal discount) {
+            this.discount = discount;
+        }
         /**
          * TODO: This could be a good place to apply the results of
          *  the discount calculations.
@@ -46,12 +65,12 @@ public class Basket {
          *  Think about how Basket could interact with something
          *  which provides that functionality.
          */
-        private BigDecimal discounts() {
-            return BigDecimal.ZERO;
+        private BigDecimal getDiscounts() {
+            return discount;
         }
 
         private BigDecimal calculate() {
-            return subtotal().subtract(discounts());
+            return subtotal().subtract(getDiscounts());
         }
     }
 }
